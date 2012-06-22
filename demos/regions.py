@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
 import pygame
-import pygame.gfxdraw
 from pygame.locals import *
 from pygame.compat import geterror
-from pygame import gfxdraw
 import os
+
+if not pygame.font:
+    print ("No font support compiled")
+    sys.exit()
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 data_dir = main_dir
@@ -13,8 +15,11 @@ data_dir = main_dir
 SCREENSIZE = 700
 REGIONS = 7
 REGIONSIZE = SCREENSIZE / REGIONS
-BGCOLOR = (225, 225, 225)
-POINTCOLOR = (0, 0, 0)
+
+colors = {
+        "background": pygame.Color(225, 225, 225),
+        "point": pygame.Color(0, 0, 0)
+}
 
 
 def load_image(name, colorkey=None):
@@ -22,7 +27,7 @@ def load_image(name, colorkey=None):
     try:
         image = pygame.image.load(fullname)
     except pygame.error:
-        print ('Cannot load image:', fullname)
+        print ("Cannot load image:", fullname)
         raise SystemExit(str(geterror()))
     image = image.convert()
     if colorkey is not None:
@@ -42,15 +47,18 @@ class Ball(pygame.sprite.Sprite):
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREENSIZE, SCREENSIZE))
-    screen.fill(BGCOLOR)
+    screen.fill(colors["background"])
     bg = pygame.Surface(screen.get_size(), pygame.SRCALPHA, 32)
+    font = pygame.font.Font(None, 14)
 
     # draw region limits
     for i in range(1, REGIONS):
         x = i * REGIONSIZE
         for j in range(1, REGIONS):
             y = j * REGIONSIZE
-            pygame.gfxdraw.pixel(bg, x, y, POINTCOLOR)
+            text = font.render("{0},{1}".format(x, y), 1, colors["point"])
+            textpos = text.get_rect(centerx=x, centery=y)
+            screen.blit(text, textpos)
 
     # add ball sprite
     ball = Ball()
@@ -73,5 +81,5 @@ def main():
     finally:
         pygame.quit()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
