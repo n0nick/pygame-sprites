@@ -13,8 +13,8 @@ main_dir = os.path.split(os.path.abspath(__file__))[0]
 data_dir = main_dir
 
 SCREENSIZE = 700
-REGIONS = 7
-REGIONSIZE = SCREENSIZE / REGIONS
+REGIONSROW = 7
+REGIONSROWIZE = SCREENSIZE / REGIONSROW
 
 colors = {
         "background": pygame.Color(225, 225, 225),
@@ -47,10 +47,15 @@ class Ball(pygame.sprite.Sprite):
 
     def move(self, direction):
         if direction:
-            if direction > 0:
+            if direction == pygame.K_RIGHT:
                 self.current_region += 1
-            if direction < 0:
+            elif direction == pygame.K_LEFT:
                 self.current_region -= 1
+            elif direction == pygame.K_UP:
+                self.current_region -= REGIONSROW
+            elif direction == pygame.K_DOWN:
+                self.current_region += REGIONSROW
+
         self.current_region %= len(self.regions)
         self.draw_in_region()
 
@@ -71,6 +76,7 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREENSIZE, SCREENSIZE))
     clock = pygame.time.Clock()
+    arrow_keys = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]
 
     # background
     background = pygame.Surface(screen.get_size(), pygame.SRCALPHA, 32)
@@ -79,10 +85,10 @@ def main():
 
     # prepare regions
     regions = []
-    for i in range(0, REGIONS):
-        y = i * REGIONSIZE
-        for j in range(0, REGIONS):
-            x = j * REGIONSIZE
+    for i in range(0, REGIONSROW):
+        y = i * REGIONSROWIZE
+        for j in range(0, REGIONSROW):
+            x = j * REGIONSROWIZE
             regions.append((x, y))
 
     # add ball sprite
@@ -96,12 +102,9 @@ def main():
                 if event.type == QUIT or \
                     (event.type == KEYDOWN and event.key == K_ESCAPE):
                         return
-
-            keystate = pygame.key.get_pressed()
-
-            direction = keystate[K_RIGHT] - keystate[K_LEFT]
-            if direction:
-                ball.move(direction)
+                if event.type == pygame.KEYUP:
+                    if event.key in arrow_keys:
+                        ball.move(event.key)
 
             all.clear(screen, background)
             all.update()
