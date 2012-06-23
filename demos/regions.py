@@ -51,15 +51,18 @@ def main():
     screen.fill(colors["background"])
     background = pygame.Surface(screen.get_size(), pygame.SRCALPHA, 32)
     font = pygame.font.Font(None, 14)
+    regions = []
 
-    # draw region limits
-    for i in range(1, REGIONS):
-        x = i * REGIONSIZE
-        for j in range(1, REGIONS):
-            y = j * REGIONSIZE
-            text = font.render("{0},{1}".format(x, y), 1, colors["point"])
-            textpos = text.get_rect(centerx=x, centery=y)
-            screen.blit(text, textpos)
+    # prepare regions and label them
+    for i in range(0, REGIONS):
+        y = i * REGIONSIZE
+        for j in range(0, REGIONS):
+            x = j * REGIONSIZE
+            regions.append((x, y))
+            if x > 0 and y > 0: # labels
+                text = font.render("{0},{1}".format(x, y), 1, colors["point"])
+                textpos = text.get_rect(centerx=x, centery=y)
+                screen.blit(text, textpos)
 
     # add ball sprite
     ball = Ball()
