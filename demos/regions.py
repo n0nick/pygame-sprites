@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 
+import os
 import pygame
 from pygame.locals import *
 from pygame.compat import geterror
-import os
+
+# Import new sprite class
+parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.sys.path.insert(0, parentdir)
+from sprite import Sprite as NewSprite
 
 if not pygame.font:
     print ("No font support compiled")
@@ -37,9 +42,9 @@ def load_image(name, colorkey=None):
     return image, image.get_rect()
 
 
-class Ball(pygame.sprite.Sprite):
+class Ball(NewSprite):
     def __init__(self, regions):
-        pygame.sprite.Sprite.__init__(self)
+        NewSprite.__init__(self)
         self.image, self.rect = load_image("ball.png", -1)
         self.regions = regions
         self.current_region = 0
