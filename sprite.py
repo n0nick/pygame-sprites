@@ -2,6 +2,13 @@ import pygame
 from operator import truth
 
 
+ANCHOR_TOPLEFT = 101
+ANCHOR_TOPRIGHT = 102
+ANCHOR_BOTTOMLEFT = 103
+ANCHOR_BOTTOMRIGHT = 104
+ANCHOR_CENTER = 105
+
+
 class Sprite(object):
     """simple base class for visible game objects
 
@@ -18,9 +25,44 @@ class Sprite(object):
     """
 
     def __init__(self, *groups):
+        self.anchor = ANCHOR_TOPLEFT
+        self.position = None
+
         self.__g = {}  # The groups the sprite is in
         if groups:
             self.add(*groups)
+
+    #TODO handle negative values
+    def anchor_value(self):
+        if type(self.anchor) is tuple:
+            return self.anchor
+        elif self.anchor == ANCHOR_TOPLEFT:
+            return (0, 0)
+        elif self.anchor == ANCHOR_TOPRIGHT:
+            return (self.rect.width, 0)
+        elif self.anchor == ANCHOR_BOTTOMLEFT:
+            return (0, self.rect.height)
+        elif self.anchor == ANCHOR_BOTTOMRIGHT:
+            return (self.rect.width, self.rect.height)
+        elif self.anchor == ANCHOR_CENTER:
+            return (self.rect.width/2, self.rect.height/2)
+        else:
+            return None  # shouldn't happen :(
+
+    @property
+    def position(self):
+        return self._position
+
+    #TODO handle float values
+    @position.setter
+    def position(self, value):
+        self._position = value
+        if value:
+            anchor = self.anchor_value()
+            x = value[0] - anchor[0]
+            y = value[1] - anchor[1]
+            self.rect.topleft = (x, y)
+
 
     def add(self, *groups):
         """add the sprite to groups
