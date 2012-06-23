@@ -58,25 +58,31 @@ class Ball(pygame.sprite.Sprite):
         self.rect.topleft = self.regions[self.current_region]
 
 
+def print_labels(screen, regions):
+    font = pygame.font.Font(None, 14)
+    for x, y in regions:
+        if x > 0 and y > 0:  # labels
+            text = font.render("{0},{1}".format(x, y), 1, colors["point"])
+            textpos = text.get_rect(centerx=x, centery=y)
+            screen.blit(text, textpos)
+
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREENSIZE, SCREENSIZE))
     clock = pygame.time.Clock()
     screen.fill(colors["background"])
     background = pygame.Surface(screen.get_size(), pygame.SRCALPHA, 32)
-    font = pygame.font.Font(None, 14)
     regions = []
 
-    # prepare regions and label them
+    # prepare regions
     for i in range(0, REGIONS):
         y = i * REGIONSIZE
         for j in range(0, REGIONS):
             x = j * REGIONSIZE
             regions.append((x, y))
-            if x > 0 and y > 0:  # labels
-                text = font.render("{0},{1}".format(x, y), 1, colors["point"])
-                textpos = text.get_rect(centerx=x, centery=y)
-                screen.blit(text, textpos)
+
+    print_labels(screen, regions)
 
     # add ball sprite
     ball = Ball(regions)
