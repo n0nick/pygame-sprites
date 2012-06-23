@@ -47,8 +47,10 @@ class Ball(pygame.sprite.Sprite):
 
     def move(self, direction):
         if direction:
-            if direction > 0: self.current_region+= 1
-            if direction < 0: self.current_region-= 1
+            if direction > 0:
+                self.current_region += 1
+            if direction < 0:
+                self.current_region -= 1
         self.draw_in_region()
 
     def draw_in_region(self):
@@ -70,7 +72,7 @@ def main():
         for j in range(0, REGIONS):
             x = j * REGIONSIZE
             regions.append((x, y))
-            if x > 0 and y > 0: # labels
+            if x > 0 and y > 0:  # labels
                 text = font.render("{0},{1}".format(x, y), 1, colors["point"])
                 textpos = text.get_rect(centerx=x, centery=y)
                 screen.blit(text, textpos)
