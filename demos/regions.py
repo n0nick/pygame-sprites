@@ -71,11 +71,14 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREENSIZE, SCREENSIZE))
     clock = pygame.time.Clock()
-    screen.fill(colors["background"])
+
+    # background
     background = pygame.Surface(screen.get_size(), pygame.SRCALPHA, 32)
-    regions = []
+    background = background.convert()
+    background.fill(colors["background"])
 
     # prepare regions
+    regions = []
     for i in range(0, REGIONS):
         y = i * REGIONSIZE
         for j in range(0, REGIONS):
