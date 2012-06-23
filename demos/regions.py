@@ -47,6 +47,7 @@ class Ball(pygame.sprite.Sprite):
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREENSIZE, SCREENSIZE))
+    clock = pygame.time.Clock()
     screen.fill(colors["background"])
     background = pygame.Surface(screen.get_size(), pygame.SRCALPHA, 32)
     font = pygame.font.Font(None, 14)
@@ -78,6 +79,7 @@ def main():
             allsprites.draw(screen)
             screen.blit(background, (0, 0))
             pygame.display.flip()
+            clock.tick(40)
     finally:
         pygame.quit()
 
