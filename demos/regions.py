@@ -92,11 +92,12 @@ def main():
 
             keystate = pygame.key.get_pressed()
 
+            direction = keystate[K_RIGHT] - keystate[K_LEFT]
+            if direction:
+                ball.move(direction)
+
             all.clear(screen, background)
             all.update()
-
-            direction = keystate[K_RIGHT] - keystate[K_LEFT]
-            ball.move(direction)
 
             screen.blit(background, (0, 0))
             all.draw(screen)
