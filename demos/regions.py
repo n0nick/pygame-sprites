@@ -51,6 +51,7 @@ class Ball(pygame.sprite.Sprite):
                 self.current_region += 1
             if direction < 0:
                 self.current_region -= 1
+        self.current_region %= len(self.regions)
         self.draw_in_region()
 
     def draw_in_region(self):
