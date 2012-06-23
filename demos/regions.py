@@ -38,10 +38,21 @@ def load_image(name, colorkey=None):
 
 
 class Ball(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, regions):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect = load_image("ball.png", -1)
-        self.rect.topleft = 10, 10
+        self.regions = regions
+        self.current_region = 0
+        self.draw_in_region()
+
+    def move(self, direction):
+        if direction:
+            if direction > 0: self.current_region+= 1
+            if direction < 0: self.current_region-= 1
+        self.draw_in_region()
+
+    def draw_in_region(self):
+        self.rect.topleft = self.regions[self.current_region]
 
 
 def main():
@@ -65,22 +76,27 @@ def main():
                 screen.blit(text, textpos)
 
     # add ball sprite
-    ball = Ball()
-    allsprites = pygame.sprite.RenderPlain((ball))
+    ball = Ball(regions)
+    all = pygame.sprite.RenderPlain((ball))
 
     try:
         while 1:
 
-            event = pygame.event.wait()
-            if event.type == pygame.QUIT:
-                break
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE or event.unicode == 'q':
-                    break
+            for event in pygame.event.get():
+                if event.type == QUIT or \
+                    (event.type == KEYDOWN and event.key == K_ESCAPE):
+                        return
 
-            allsprites.update()
-            allsprites.draw(screen)
+            keystate = pygame.key.get_pressed()
+
+            all.clear(screen, background)
+            all.update()
+
+            direction = keystate[K_RIGHT] - keystate[K_LEFT]
+            ball.move(direction)
+
             screen.blit(background, (0, 0))
+            all.draw(screen)
             pygame.display.flip()
             clock.tick(40)
     finally:
