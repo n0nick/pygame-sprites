@@ -48,7 +48,7 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREENSIZE, SCREENSIZE))
     screen.fill(colors["background"])
-    bg = pygame.Surface(screen.get_size(), pygame.SRCALPHA, 32)
+    background = pygame.Surface(screen.get_size(), pygame.SRCALPHA, 32)
     font = pygame.font.Font(None, 14)
 
     # draw region limits
@@ -75,8 +75,8 @@ def main():
                     break
 
             allsprites.update()
-            screen.blit(bg, (0, 0))
             allsprites.draw(screen)
+            screen.blit(background, (0, 0))
             pygame.display.flip()
     finally:
         pygame.quit()
