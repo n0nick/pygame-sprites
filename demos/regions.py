@@ -8,7 +8,7 @@ from pygame.compat import geterror
 # Import new sprite class
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.sys.path.insert(0, parentdir)
-from sprite import Sprite as NewSprite
+from sprite import *
 
 if not pygame.font:
     print ("No font support compiled")
@@ -42,9 +42,9 @@ def load_image(name, colorkey=None):
     return image, image.get_rect()
 
 
-class Ball(NewSprite):
+class Ball(Sprite):
     def __init__(self, regions):
-        NewSprite.__init__(self)
+        Sprite.__init__(self)
         self.image, self.rect = load_image("ball.png", -1)
         self.regions = regions
         self.current_region = 0
@@ -64,8 +64,16 @@ class Ball(NewSprite):
         self.current_region %= len(self.regions)
         self.draw_in_region()
 
+    def change_anchor(self, key):
+        if key == pygame.K_a:
+            self.anchor = ANCHOR_TOPLEFT
+        elif key == pygame.K_s:
+            self.anchor = ANCHOR_CENTER
+        elif key == pygame.K_d:
+            self.anchor = (25, 20)
+
     def draw_in_region(self):
-        self.rect.topleft = self.regions[self.current_region]
+        self.position = self.regions[self.current_region]
 
 
 def print_labels(screen, regions):
@@ -82,6 +90,8 @@ def main():
     screen = pygame.display.set_mode((SCREENSIZE, SCREENSIZE))
     clock = pygame.time.Clock()
     arrow_keys = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]
+    anchor_keys = [pygame.K_a, pygame.K_s, pygame.K_d]
+    quit_keys = [pygame.K_ESCAPE, pygame.K_q]
 
     # background
     background = pygame.Surface(screen.get_size(), pygame.SRCALPHA, 32)
@@ -104,12 +114,15 @@ def main():
         while 1:
 
             for event in pygame.event.get():
-                if event.type == QUIT or \
-                    (event.type == KEYDOWN and event.key == K_ESCAPE):
+                if event.type == QUIT:
                         return
                 if event.type == pygame.KEYUP:
                     if event.key in arrow_keys:
                         ball.move(event.key)
+                    elif event.key in anchor_keys:
+                        ball.change_anchor(event.key)
+                    elif event.key in quit_keys:
+                        return
 
             all.clear(screen, background)
             all.update()
