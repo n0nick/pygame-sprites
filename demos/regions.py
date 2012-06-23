@@ -85,8 +85,6 @@ def main():
             x = j * REGIONSIZE
             regions.append((x, y))
 
-    print_labels(screen, regions)
-
     # add ball sprite
     ball = Ball(regions)
     all = pygame.sprite.RenderPlain((ball))
@@ -109,6 +107,8 @@ def main():
             all.update()
 
             screen.blit(background, (0, 0))
+            print_labels(screen, regions)
+
             all.draw(screen)
             pygame.display.flip()
             clock.tick(40)
