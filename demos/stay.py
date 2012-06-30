@@ -22,6 +22,7 @@ SCREEN_CENTER = (SCREEN_SIZE / 2, SCREEN_SIZE / 2)
 SCALE_STEP = 0.1
 SCALE_MIN = 0.3
 SCALE_MAX = 7.0
+ROTATE_STEP = 5
 
 colors = {
         "background": pygame.Color(225, 225, 225),
@@ -111,7 +112,7 @@ def main():
                     ball.scale = new_scale
 
             if rotate != 0:
-                ball.rotate+= rotate * 10
+                ball.rotate+= rotate * ROTATE_STEP
 
             all.clear(screen, background)
             all.update()
