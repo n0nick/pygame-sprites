@@ -112,7 +112,7 @@ def main():
                     ball.scale = new_scale
 
             if rotate != 0:
-                ball.rotate+= rotate * ROTATE_STEP
+                ball.rotate += rotate * ROTATE_STEP
 
             all.clear(screen, background)
             all.update()
