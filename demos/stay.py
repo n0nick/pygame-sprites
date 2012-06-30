@@ -94,9 +94,9 @@ def main():
                         scale = 1
                     elif event.key == pygame.K_DOWN:
                         scale = -1
-                    elif event.key == pygame.K_RIGHT:
-                        rotate = 1
                     elif event.key == pygame.K_LEFT:
+                        rotate = 1
+                    elif event.key == pygame.K_RIGHT:
                         rotate = -1
                 elif event.type == pygame.KEYUP:
                     if event.key in scale_keys:
