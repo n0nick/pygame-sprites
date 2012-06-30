@@ -33,6 +33,7 @@ class Sprite(object):
             self.add(*groups)
 
     #TODO handle negative values
+    #TODO use same constants as Rect's
     def anchor_value(self):
         if type(self.anchor) is tuple:
             return self.anchor
