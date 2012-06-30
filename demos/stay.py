@@ -17,8 +17,8 @@ if not pygame.font:
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 data_dir = main_dir
 
-SCREENSIZE = 700
-SCREENCENTER = (SCREENSIZE / 2, SCREENSIZE / 2)
+SCREEN_SIZE = 700
+SCREEN_CENTER = (SCREEN_SIZE / 2, SCREEN_SIZE / 2)
 
 colors = {
         "background": pygame.Color(225, 225, 225),
@@ -46,8 +46,8 @@ def draw_squares(screen):
     for size in [100, 250, 500]:
         for sgn_x in [+1, -1]:
             for sgn_y in [+1, -1]:
-                x = SCREENSIZE / 2 + sgn_x * size / 2
-                y = SCREENSIZE / 2 + sgn_y * size / 2
+                x = SCREEN_SIZE / 2 + sgn_x * size / 2
+                y = SCREEN_SIZE / 2 + sgn_y * size / 2
                 pygame.draw.lines(screen, colors["square"], False,
                         [(x, y - sgn_y * line_length),
                          (x, y),
@@ -63,8 +63,9 @@ class Ball(Sprite):
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((SCREENSIZE, SCREENSIZE))
+    screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
     clock = pygame.time.Clock()
+    scale_keys = [pygame.K_UP, pygame.K_DOWN]
     quit_keys = [pygame.K_ESCAPE, pygame.K_q]
 
     # background
@@ -74,7 +75,7 @@ def main():
 
     # add ball sprite
     ball = Ball()
-    ball.position = SCREENCENTER
+    ball.position = SCREEN_CENTER
     all = pygame.sprite.RenderPlain((ball))
 
     try:
