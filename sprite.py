@@ -31,6 +31,9 @@ class Sprite(object):
         self.anchor = ANCHOR_TOPLEFT
         self.position = None
 
+        # visual attributes
+        self.scale = 1
+
         self.__g = {}  # The groups the sprite is in
         if groups:
             self.add(*groups)
@@ -67,6 +70,30 @@ class Sprite(object):
             y = value[1] - anchor[1]
             self.rect.topleft = (x, y)
 
+    @property
+    def scale(self):
+        try:
+            return self._scale
+        except AttributeError:
+            return 1
+
+    @scale.setter
+    def scale(self, ratio):
+        if ratio < 0:
+            raise AttributeError("ratio must be a positive float")
+        if self.image:
+            if self.scale == 1:
+                self.original = self.image
+
+            if ratio == 1:
+                self.image = self.original
+            else:
+                w = (int)(self.original.get_width()  * ratio)
+                h = (int)(self.original.get_height() * ratio)
+                self.image = pygame.transform.scale(self.original, (w, h))
+                self.rect.inflate_ip(w - self.rect.width, h - self.rect.height)
+
+        self._scale = ratio
 
     def add(self, *groups):
         """add the sprite to groups
