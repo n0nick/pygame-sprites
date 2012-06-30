@@ -39,6 +39,28 @@ class Sprite(object):
         if groups:
             self.add(*groups)
 
+    @property
+    def image(self):
+        try:
+            img = self._image
+        except AttributeError:
+            img = None
+
+        if img is not None:
+            if self.scale != 1 or self.rotate != 0:
+                center = self.rect.center  # TODO care about `anchor` here
+                if self.scale != 1:
+                    img = pygame.transform.scale(img, self.scaled_size())
+                if self.rotate != 0:
+                    img = pygame.transform.rotate(img, self.rotate)
+                self.rect = img.get_rect(center=center)
+
+        return img
+
+    @image.setter
+    def image(self, img):
+        self._image = img
+
     #TODO handle negative values
     #TODO use same constants as Rect's
     def anchor_value(self):
@@ -53,7 +75,7 @@ class Sprite(object):
         elif self.anchor == ANCHOR_BOTTOMRIGHT:
             return (self.rect.width, self.rect.height)
         elif self.anchor == ANCHOR_CENTER:
-            return (self.rect.width/2, self.rect.height/2)
+            return (self.rect.width / 2, self.rect.height / 2)
         else:
             return None  # shouldn't happen :(
 
@@ -82,16 +104,13 @@ class Sprite(object):
     def scale(self, ratio):
         if ratio < 0:
             raise AttributeError("ratio must be a positive float")
-        if self.image:
-            if self.scale == 1 and self.rotate == 0:
-                self.original = self.image
+        self._scale = ratio
 
-            w = (int)(self.original.get_width()  * ratio)
-            h = (int)(self.original.get_height() * ratio)
-            self.image = pygame.transform.scale(self.original, (w, h))
-            self.rect.inflate_ip(w - self.rect.width, h - self.rect.height)
-
-            self._scale = ratio
+    def scaled_size(self):
+        (width, height) = self._image.get_size()
+        width = (int)(width * self.scale)
+        height = (int)(height * self.scale)
+        return (width, height)
 
     @property
     def rotate(self):
@@ -102,13 +121,7 @@ class Sprite(object):
 
     @rotate.setter
     def rotate(self, degree):
-        if self.image:
-            if self.scale == 1 and self.rotate == 0:
-                self.original = self.image
-
-            degree %= 360
-            self.image = pygame.transform.rotate(self.original, degree)
-            self._rotate = degree
+        self._rotate = degree % 360  # TODO magic number?
 
     def add(self, *groups):
         """add the sprite to groups
