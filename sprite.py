@@ -25,6 +25,9 @@ class Sprite(object):
     """
 
     def __init__(self, *groups):
+        self.image = None
+        self.rect = None
+
         self.anchor = ANCHOR_TOPLEFT
         self.position = None
 
