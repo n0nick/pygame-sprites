@@ -33,6 +33,7 @@ class Sprite(object):
 
         # visual attributes
         self.scale = 1
+        self.rotate = 0
 
         self.__g = {}  # The groups the sprite is in
         if groups:
@@ -82,18 +83,32 @@ class Sprite(object):
         if ratio < 0:
             raise AttributeError("ratio must be a positive float")
         if self.image:
-            if self.scale == 1:
+            if self.scale == 1 and self.rotate == 0:
                 self.original = self.image
 
-            if ratio == 1:
-                self.image = self.original
-            else:
-                w = (int)(self.original.get_width()  * ratio)
-                h = (int)(self.original.get_height() * ratio)
-                self.image = pygame.transform.scale(self.original, (w, h))
-                self.rect.inflate_ip(w - self.rect.width, h - self.rect.height)
+            w = (int)(self.original.get_width()  * ratio)
+            h = (int)(self.original.get_height() * ratio)
+            self.image = pygame.transform.scale(self.original, (w, h))
+            self.rect.inflate_ip(w - self.rect.width, h - self.rect.height)
 
-        self._scale = ratio
+            self._scale = ratio
+
+    @property
+    def rotate(self):
+        try:
+            return self._rotate
+        except AttributeError:
+            return 0
+
+    @rotate.setter
+    def rotate(self, degree):
+        if self.image:
+            if self.scale == 1 and self.rotate == 0:
+                self.original = self.image
+
+            degree %= 360
+            self.image = pygame.transform.rotate(self.original, degree)
+            self._rotate = degree
 
     def add(self, *groups):
         """add the sprite to groups
