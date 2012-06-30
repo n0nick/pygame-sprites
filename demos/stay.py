@@ -19,6 +19,9 @@ data_dir = main_dir
 
 SCREEN_SIZE = 700
 SCREEN_CENTER = (SCREEN_SIZE / 2, SCREEN_SIZE / 2)
+SCALE_STEP = 0.1
+SCALE_MIN = 0.3
+SCALE_MAX = 7.0
 
 colors = {
         "background": pygame.Color(225, 225, 225),
@@ -78,15 +81,27 @@ def main():
     ball.position = SCREEN_CENTER
     all = pygame.sprite.RenderPlain((ball))
 
+    scale = 0
     try:
         while 1:
-
             for event in pygame.event.get():
                 if event.type == QUIT:
+                    return
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        scale = 1
+                    elif event.key == pygame.K_DOWN:
+                        scale = -1
+                elif event.type == pygame.KEYUP:
+                    if event.key in scale_keys:
+                        scale = 0
+                    elif event.key in quit_keys:
                         return
-                if event.type == pygame.KEYUP:
-                    if event.key in quit_keys:
-                        return
+
+            if scale != 0:
+                new_scale = ball.scale + SCALE_STEP * scale
+                if SCALE_MIN < new_scale < SCALE_MAX:
+                    ball.scale = new_scale
 
             all.clear(screen, background)
             all.update()
