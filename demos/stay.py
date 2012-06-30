@@ -69,6 +69,7 @@ def main():
     screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
     clock = pygame.time.Clock()
     scale_keys = [pygame.K_UP, pygame.K_DOWN]
+    rotate_keys = [pygame.K_RIGHT, pygame.K_LEFT]
     quit_keys = [pygame.K_ESCAPE, pygame.K_q]
 
     # background
@@ -81,7 +82,7 @@ def main():
     ball.position = SCREEN_CENTER
     all = pygame.sprite.RenderPlain((ball))
 
-    scale = 0
+    scale, rotate = 0, 0
     try:
         while 1:
             for event in pygame.event.get():
@@ -92,9 +93,15 @@ def main():
                         scale = 1
                     elif event.key == pygame.K_DOWN:
                         scale = -1
+                    elif event.key == pygame.K_RIGHT:
+                        rotate = 1
+                    elif event.key == pygame.K_LEFT:
+                        rotate = -1
                 elif event.type == pygame.KEYUP:
                     if event.key in scale_keys:
                         scale = 0
+                    elif event.key in rotate_keys:
+                        rotate = 0
                     elif event.key in quit_keys:
                         return
 
@@ -102,6 +109,9 @@ def main():
                 new_scale = ball.scale + SCALE_STEP * scale
                 if SCALE_MIN < new_scale < SCALE_MAX:
                     ball.scale = new_scale
+
+            if rotate != 0:
+                ball.rotate+= rotate * 10
 
             all.clear(screen, background)
             all.update()
