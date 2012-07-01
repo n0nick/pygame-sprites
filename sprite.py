@@ -48,12 +48,12 @@ class Sprite(object):
 
         if img is not None:
             if self.scale != 1 or self.rotate != 0:
-                center = self.rect.center  # TODO care about `anchor` here
                 if self.scale != 1:
                     img = pygame.transform.scale(img, self.scaled_size())
                 if self.rotate != 0:
                     img = pygame.transform.rotate(img, self.rotate)
-                self.rect = img.get_rect(center=center)
+                self.rect = img.get_rect()
+                self.position = self.position
 
         return img
 
