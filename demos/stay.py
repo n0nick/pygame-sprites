@@ -71,6 +71,7 @@ def main():
     clock = pygame.time.Clock()
     scale_keys = [pygame.K_UP, pygame.K_DOWN]
     rotate_keys = [pygame.K_RIGHT, pygame.K_LEFT]
+    anchor_keys = [pygame.K_a]
     quit_keys = [pygame.K_ESCAPE, pygame.K_q]
 
     # background
@@ -99,11 +100,16 @@ def main():
                     elif event.key == pygame.K_RIGHT:
                         rotate = -1
                 elif event.type == pygame.KEYUP:
-                    if event.key in scale_keys:
+                    if event.key in scale_keys:  # reset scale
                         scale = 0
-                    elif event.key in rotate_keys:
+                    elif event.key in rotate_keys:  # reset rotate
                         rotate = 0
-                    elif event.key in quit_keys:
+                    elif event.key in anchor_keys:  # toggle anchor
+                        if ball.anchor == ANCHOR_CENTER:
+                            ball.anchor = ANCHOR_TOPLEFT
+                        else:
+                            ball.anchor = ANCHOR_CENTER
+                    elif event.key in quit_keys:  # quit game
                         return
 
             if scale != 0:
