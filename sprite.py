@@ -88,10 +88,9 @@ class Sprite(object):
     def position(self, value):
         self._position = value
         if value:
-            anchor = self.anchor_value()
-            x = value[0] - anchor[0]
-            y = value[1] - anchor[1]
-            self.rect.topleft = (x, y)
+            (x, y) = value
+            (anchor_x, anchor_y) = self.anchor_value()
+            self.rect.topleft = (x - anchor_x, y - anchor_y)
 
     @property
     def scale(self):
