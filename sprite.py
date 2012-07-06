@@ -410,7 +410,8 @@ class AbstractGroup(object):
         sprites = self.sprites()
         surface_blit = surface.blit
         for spr in sprites:
-            self.spritedict[spr] = surface_blit(spr.image, spr.rect)
+            if not(hasattr(spr, 'visible')) or spr.visible:
+                self.spritedict[spr] = surface_blit(spr.image, spr.rect)
         self.lostsprites = []
 
     def clear(self, surface, bgd):
