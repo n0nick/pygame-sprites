@@ -71,6 +71,7 @@ def main():
     clock = pygame.time.Clock()
     scale_keys = [pygame.K_UP, pygame.K_DOWN]
     rotate_keys = [pygame.K_RIGHT, pygame.K_LEFT]
+    visibility_keys = [pygame.K_SPACE]
     anchor_keys = [pygame.K_a]
     quit_keys = [pygame.K_ESCAPE, pygame.K_q]
 
@@ -82,7 +83,7 @@ def main():
     # add ball sprite
     ball = Ball()
     ball.position = SCREEN_CENTER
-    all = pygame.sprite.RenderPlain((ball))
+    all = Group((ball))
 
     scale, rotate = 0, 0
     try:
@@ -109,6 +110,8 @@ def main():
                             ball.anchor = ANCHOR_TOPLEFT
                         else:
                             ball.anchor = ANCHOR_CENTER
+                    elif event.key in visibility_keys:
+                        ball.visible = not(ball.visible)
                     elif event.key in quit_keys:  # quit game
                         return
 
