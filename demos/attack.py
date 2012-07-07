@@ -21,6 +21,7 @@ SCALE_STEP = 0.1
 SCALE_MIN = 0.3
 SCALE_MAX = 3.0
 ROTATE_STEP = 5
+MOVE_STEP = 5
 
 colors = {
         "background": pygame.Color(225, 225, 225)
@@ -52,10 +53,11 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREENSIZE, SCREENSIZE))
     clock = pygame.time.Clock()
-    arrow_keys = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]
     rotate_keys = [pygame.K_a, pygame.K_s]
     scale_keys = [pygame.K_z, pygame.K_x]
     visibility_keys = [pygame.K_SPACE]
+    left_keys = [pygame.K_LEFT, pygame.K_RIGHT]
+    top_keys = [pygame.K_UP, pygame.K_DOWN]
     quit_keys = [pygame.K_ESCAPE, pygame.K_q]
 
     # background
@@ -72,7 +74,7 @@ def main():
             balls.add_sprite(b)
     all = RenderPlain((balls))
 
-    scale, rotate = 0, 0
+    scale, rotate, top, left = 0, 0, 0, 0
     try:
         while 1:
 
@@ -88,13 +90,23 @@ def main():
                         scale = 1
                     elif event.key == pygame.K_x:
                         scale = -1
+                    elif event.key == pygame.K_UP:
+                        top = -1
+                    elif event.key == pygame.K_DOWN:
+                        top = 1
+                    elif event.key == pygame.K_LEFT:
+                        left = -1
+                    elif event.key == pygame.K_RIGHT:
+                        left = 1
                 elif event.type == pygame.KEYUP:
-                    if event.key in arrow_keys:
-                        pass
-                    elif event.key in rotate_keys:
+                    if event.key in rotate_keys:
                         rotate = 0
                     elif event.key in scale_keys:
                         scale = 0
+                    elif event.key in left_keys:
+                        left = 0
+                    elif event.key in top_keys:
+                        top = 0
                     elif event.key in visibility_keys:
                         balls.visible = not balls.visible
                     elif event.key in quit_keys:
@@ -107,6 +119,15 @@ def main():
 
             if rotate != 0:
                 balls.rotate += rotate * ROTATE_STEP
+
+            if left != 0 or top != 0:
+                (x, y) = balls.position
+                x += left * MOVE_STEP
+                y += top * MOVE_STEP
+
+                if 0 <= x <= SCREENSIZE:
+                    if 0 <= y <= SCREENSIZE:
+                        balls.position = (x, y)
 
             all.clear(screen, background)
             all.update()
