@@ -256,20 +256,22 @@ class Sprite(object):
 
 
 class AggregatedSprite(Sprite):
-    @property
-    def sprites(self):
+    def _get_sprites(self):
         try:
             return self._sprites
         except AttributeError:
             self._sprites = []
             return self._sprites
 
-    @sprites.setter
-    def sprites(self, sprites):
+    def _set_sprites(self, sprites):
         self._sprites = sprites
 
     def add_sprite(self, sprite):
         self.sprites.append(sprite)
+
+    sprites = property(_get_sprites,
+                       _set_sprites,
+                       doc="List of sprites to aggregate")
 
     def draw(self, surface):
         ret = pygame.Rect(0, 0, 0, 0)
@@ -278,20 +280,9 @@ class AggregatedSprite(Sprite):
             ret.union_ip(r)
         return ret
 
-    #TODO call super!!!
-    @property
-    def rotate(self):
-        try:
-            return self._rotate
-        except AttributeError:
-            return 0
-
-    #TODO call super!!!
-    @rotate.setter
-    def rotate(self, degree):
-        self._rotate = degree % 360  # TODO magic number?
+    def on_visual_set(self, method, *args, **kwargs):
         for spr in self.sprites:
-            spr.rotate = degree
+            method(spr, *args, **kwargs)
 
 
 class AbstractGroup(object):
