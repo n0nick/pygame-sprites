@@ -105,6 +105,16 @@ class Sprite(object):
                         that is, where on the surface its anchor \
                         would be rendered")
 
+    def _get_visible(self):
+        return self._visible
+
+    def _set_visible(self, value):
+        self._visible = value
+
+    visible = property(_get_visible,
+                       _set_visible,
+                       doc="Whether to draw the sprite")
+
     def _get_scale(self):
         try:
             return self._scale
