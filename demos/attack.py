@@ -14,8 +14,12 @@ main_dir = os.path.split(os.path.abspath(__file__))[0]
 data_dir = main_dir
 
 SCREENSIZE = 700
-BALLROWS = 3
-BALLCOLS = 5
+BALL_ROWS = 3
+BALL_COLS = 5
+BALL_SIZE = 100
+SCALE_STEP = 0.1
+SCALE_MIN = 0.3
+SCALE_MAX = 3.0
 ROTATE_STEP = 5
 
 colors = {
@@ -42,7 +46,6 @@ class Ball(Sprite):
     def __init__(self):
         Sprite.__init__(self)
         self.image, self.rect = load_image("ball.png", -1)
-        self.scale = 0.5
         self.anchor = ANCHOR_CENTER
 
 def main():
@@ -51,6 +54,8 @@ def main():
     clock = pygame.time.Clock()
     arrow_keys = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]
     rotate_keys = [pygame.K_a, pygame.K_s]
+    scale_keys = [pygame.K_z, pygame.K_x]
+    visibility_keys = [pygame.K_SPACE]
     quit_keys = [pygame.K_ESCAPE, pygame.K_q]
 
     # background
@@ -60,14 +65,14 @@ def main():
 
     # add ball sprite
     balls = AggregatedSprite()
-    for i in range(0, BALLCOLS):
-        for j in range(0, BALLROWS):
+    for i in range(0, BALL_COLS):
+        for j in range(0, BALL_ROWS):
             b = Ball()
-            b.position = (50 + i * 50, 50 + j * 50) #TODO
+            b.position = (BALL_SIZE + i * BALL_SIZE, BALL_SIZE + j * BALL_SIZE)
             balls.add_sprite(b)
     all = RenderPlain((balls))
 
-    rotate = 0
+    scale, rotate = 0, 0
     try:
         while 1:
 
@@ -79,13 +84,26 @@ def main():
                         rotate = 1
                     elif event.key == pygame.K_s:
                         rotate = -1
+                    elif event.key == pygame.K_z:
+                        scale = 1
+                    elif event.key == pygame.K_x:
+                        scale = -1
                 elif event.type == pygame.KEYUP:
                     if event.key in arrow_keys:
                         pass
                     elif event.key in rotate_keys:
                         rotate = 0
+                    elif event.key in scale_keys:
+                        scale = 0
+                    elif event.key in visibility_keys:
+                        balls.visible = not balls.visible
                     elif event.key in quit_keys:
                         return
+
+            if scale != 0:
+                new_scale = balls.scale + SCALE_STEP * scale
+                if SCALE_MIN < new_scale < SCALE_MAX:
+                    balls.scale = new_scale
 
             if rotate != 0:
                 balls.rotate += rotate * ROTATE_STEP
