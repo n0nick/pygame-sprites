@@ -49,6 +49,7 @@ class Ball(Sprite):
         self.image, self.rect = load_image("ball.png", -1)
         self.anchor = ANCHOR_CENTER
 
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREENSIZE, SCREENSIZE))
@@ -142,4 +143,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
