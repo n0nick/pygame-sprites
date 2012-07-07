@@ -277,7 +277,8 @@ class AggregatedSprite(Sprite):
         ret = pygame.Rect(0, 0, 0, 0)
         for spr in self.sprites:
             r = spr.draw(surface)
-            ret.union_ip(r)
+            if r != 0:
+                ret.union_ip(r)
         return ret
 
     def on_visual_set(self, method, *args, **kwargs):
