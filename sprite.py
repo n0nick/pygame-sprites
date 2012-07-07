@@ -225,6 +225,45 @@ class Sprite(object):
                 % (self.__class__.__name__, len(self.__g))
 
 
+class AggregatedSprite(Sprite):
+    @property
+    def sprites(self):
+        try:
+            return self._sprites
+        except AttributeError:
+            self._sprites = []
+            return self._sprites
+
+    @sprites.setter
+    def sprites(self, sprites):
+        self._sprites = sprites
+
+    def add_sprite(self, sprite):
+        self.sprites.append(sprite)
+
+    def draw(self, surface):
+        ret = pygame.Rect(0, 0, 0, 0)
+        for spr in self.sprites:
+            r = spr.draw(surface)
+            ret.union_ip(r)
+        return ret
+
+    #TODO call super!!!
+    @property
+    def rotate(self):
+        try:
+            return self._rotate
+        except AttributeError:
+            return 0
+
+    #TODO call super!!!
+    @rotate.setter
+    def rotate(self, degree):
+        self._rotate = degree % 360  # TODO magic number?
+        for spr in self.sprites:
+            spr.rotate = degree
+
+
 class AbstractGroup(object):
     """base class for containers of sprites
 
