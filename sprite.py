@@ -116,10 +116,7 @@ class Sprite(object):
                        doc="Whether to draw the sprite")
 
     def _get_scale(self):
-        try:
-            return self._scale
-        except AttributeError:
-            return 1
+        return self._scale
 
     def _set_scale(self, ratio):
         if ratio < 0:
