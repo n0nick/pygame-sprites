@@ -31,6 +31,8 @@ class Sprite(object):
         self.anchor = ANCHOR_TOPLEFT
         self.position = None
 
+        self.dirty = False
+
         # visual attributes
         self.scale = 1
         self.rotate = 0
@@ -45,6 +47,14 @@ class Sprite(object):
             return surface.blit(self.image, self.rect)
         else:
             return 0
+
+    # a callback that gets called on any visual change
+    def _visual_att(method):
+        def wrapper(self, *args, **kwargs):
+            result = method(self, *args, **kwargs)
+            self.dirty = True
+            return result
+        return wrapper
 
     def _get_image(self):
         try:
@@ -67,7 +77,7 @@ class Sprite(object):
         self._image = img
 
     image = property(_get_image,
-                     _set_image,
+                     _visual_att(_set_image),
                      doc="The sprite's original image")
 
     #TODO handle negative values
@@ -100,7 +110,7 @@ class Sprite(object):
             self.rect.topleft = (x - anchor_x, y - anchor_y)
 
     position = property(_get_position,
-                        _set_position,
+                        _visual_att(_set_position),
                         doc="The sprite's designated position, \
                         that is, where on the surface its anchor \
                         would be rendered")
@@ -112,7 +122,7 @@ class Sprite(object):
         self._visible = value
 
     visible = property(_get_visible,
-                       _set_visible,
+                       _visual_att(_set_visible),
                        doc="Whether to draw the sprite")
 
     def _get_scale(self):
@@ -124,7 +134,7 @@ class Sprite(object):
         self._scale = ratio
 
     scale = property(_get_scale,
-                     _set_scale,
+                     _visual_att(_set_scale),
                      doc="A float representing the ratio between the \
                      original image's size and the size rendered")
 
@@ -144,7 +154,7 @@ class Sprite(object):
         self._rotate = degree % 360  # TODO magic number?
 
     rotate = property(_get_rotate,
-                      _set_rotate,
+                      _visual_att(_set_rotate),
                       doc="The degrees by which to rotate the sprite's image")
 
     def add(self, *groups):
