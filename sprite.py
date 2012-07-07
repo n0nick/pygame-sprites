@@ -78,7 +78,7 @@ class Sprite(object):
 
     image = property(_get_image,
                      _visual_att(_set_image),
-                     doc="The sprite's original image")
+                     doc="The sprite's image to draw")
 
     #TODO handle negative values
     #TODO use same constants as Rect's
