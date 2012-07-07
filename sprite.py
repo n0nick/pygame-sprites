@@ -53,6 +53,8 @@ class Sprite(object):
         def wrapper(self, *args, **kwargs):
             result = method(self, *args, **kwargs)
             self.dirty = True
+            if hasattr(self, 'on_visual_set'):
+                self.on_visual_set(method, *args, **kwargs)
             return result
         return wrapper
 
