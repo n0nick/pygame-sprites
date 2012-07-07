@@ -51,10 +51,15 @@ class Sprite(object):
     # a callback that gets called on any visual change
     def _visual_set(method):
         def wrapper(self, *args, **kwargs):
-            result = method(self, *args, **kwargs)
-            self.dirty = True
+            result = None
+
+            do_change = True
             if hasattr(self, 'on_visual_set'):
-                self.on_visual_set(method, *args, **kwargs)
+                do_change = self.on_visual_set(method, *args, **kwargs)
+
+            if do_change:
+                result = method(self, *args, **kwargs)
+                self.dirty = True
             return result
         return wrapper
 
@@ -284,6 +289,7 @@ class AggregatedSprite(Sprite):
     def on_visual_set(self, method, *args, **kwargs):
         for spr in self.sprites:
             method(spr, *args, **kwargs)
+        return True
 
 
 class AbstractGroup(object):
