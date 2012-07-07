@@ -46,8 +46,7 @@ class Sprite(object):
         else:
             return 0
 
-    @property
-    def image(self):
+    def _get_image(self):
         try:
             img = self._image
         except AttributeError:
@@ -64,9 +63,12 @@ class Sprite(object):
 
         return img
 
-    @image.setter
-    def image(self, img):
+    def _set_image(self, img):
         self._image = img
+
+    image = property(_get_image,
+                     _set_image,
+                     doc="The sprite's original image")
 
     #TODO handle negative values
     #TODO use same constants as Rect's
@@ -86,31 +88,38 @@ class Sprite(object):
         else:
             return None  # shouldn't happen :(
 
-    @property
-    def position(self):
+    def _get_position(self):
         return self._position
 
     #TODO handle float values
-    @position.setter
-    def position(self, value):
+    def _set_position(self, value):
         self._position = value
         if value:
             (x, y) = value
             (anchor_x, anchor_y) = self.anchor_value()
             self.rect.topleft = (x - anchor_x, y - anchor_y)
 
-    @property
-    def scale(self):
+    position = property(_get_position,
+                        _set_position,
+                        doc="The sprite's designated position, \
+                        that is, where on the surface its anchor \
+                        would be rendered")
+
+    def _get_scale(self):
         try:
             return self._scale
         except AttributeError:
             return 1
 
-    @scale.setter
-    def scale(self, ratio):
+    def _set_scale(self, ratio):
         if ratio < 0:
             raise AttributeError("ratio must be a positive float")
         self._scale = ratio
+
+    scale = property(_get_scale,
+                     _set_scale,
+                     doc="A float representing the ratio between the \
+                     original image's size and the size rendered")
 
     def scaled_size(self):
         (width, height) = self._image.get_size()
@@ -118,16 +127,18 @@ class Sprite(object):
         height = (int)(height * self.scale)
         return (width, height)
 
-    @property
-    def rotate(self):
+    def _get_rotate(self):
         try:
             return self._rotate
         except AttributeError:
             return 0
 
-    @rotate.setter
-    def rotate(self, degree):
+    def _set_rotate(self, degree):
         self._rotate = degree % 360  # TODO magic number?
+
+    rotate = property(_get_rotate,
+                      _set_rotate,
+                      doc="The degrees by which to rotate the sprite's image")
 
     def add(self, *groups):
         """add the sprite to groups
