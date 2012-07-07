@@ -40,6 +40,12 @@ class Sprite(object):
         if groups:
             self.add(*groups)
 
+    def draw(self, surface):
+        if (self.visible):
+            return surface.blit(self.image, self.rect)
+        else:
+            return 0
+
     @property
     def image(self):
         try:
@@ -410,7 +416,9 @@ class AbstractGroup(object):
         sprites = self.sprites()
         surface_blit = surface.blit
         for spr in sprites:
-            if not(hasattr(spr, 'visible')) or spr.visible:
+            if (hasattr(spr, 'draw')):
+                self.spritedict[spr] = spr.draw(surface)
+            else:
                 self.spritedict[spr] = surface_blit(spr.image, spr.rect)
         self.lostsprites = []
 
@@ -466,6 +474,7 @@ class AbstractGroup(object):
 
     def __repr__(self):
         return "<%s(%d sprites)>" % (self.__class__.__name__, len(self))
+
 
 class Group(AbstractGroup):
     """container class for many Sprites
