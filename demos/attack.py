@@ -22,6 +22,8 @@ SCALE_MIN = 0.3
 SCALE_MAX = 3.0
 ROTATE_STEP = 5
 MOVE_STEP = 5
+X_MAX = SCREENSIZE - (BALL_COLS + 1) * BALL_SIZE
+Y_MAX = SCREENSIZE - (BALL_ROWS + 1) * BALL_SIZE
 
 colors = {
         "background": pygame.Color(225, 225, 225)
@@ -126,8 +128,8 @@ def main():
                 x += left * MOVE_STEP
                 y += top * MOVE_STEP
 
-                if 0 <= x <= SCREENSIZE:
-                    if 0 <= y <= SCREENSIZE:
+                if 0 <= x <= X_MAX:
+                    if 0 <= y <= Y_MAX:
                         balls.position = (x, y)
 
             all.clear(screen, background)
