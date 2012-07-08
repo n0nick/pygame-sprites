@@ -263,6 +263,11 @@ class Sprite(object):
 
 
 class AggregatedSprite(Sprite):
+    def __init__(self, *groups):
+        super(AggregatedSprite, self).__init__(*groups)
+        self.rect = pygame.Rect(0, 0, 0, 0)
+        self.position = (0, 0)
+
     def _get_sprites(self):
         try:
             return self._sprites
