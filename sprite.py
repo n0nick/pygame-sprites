@@ -77,7 +77,7 @@ class Sprite(object):
                 if self.rotate != 0:
                     img = pygame.transform.rotate(img, self.rotate)
                 self.rect = img.get_rect()
-                self.position = self.position
+            self.position = self.position
 
         return img
 
