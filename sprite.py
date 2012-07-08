@@ -30,6 +30,7 @@ class Sprite(object):
 
         self.anchor = ANCHOR_TOPLEFT
         self.position = None
+        self.offset = (0, 0)
 
         self.dirty = False
 
@@ -113,8 +114,9 @@ class Sprite(object):
         self._position = value
         if value:
             (x, y) = value
+            (off_x, off_y) = self.offset
             (anchor_x, anchor_y) = self.anchor_value()
-            self.rect.topleft = (x - anchor_x, y - anchor_y)
+            self.rect.topleft = (x + off_x - anchor_x, y + off_y - anchor_y)
 
     position = property(_get_position,
                         _visual_set(_set_position),
@@ -287,8 +289,12 @@ class AggregatedSprite(Sprite):
         return ret
 
     def on_visual_set(self, method, *args, **kwargs):
-        for spr in self.sprites:
-            method(spr, *args, **kwargs)
+        if method.__name__ == '_set_position':
+            for spr in self.sprites:
+                spr.offset = args[0]
+        else:
+            for spr in self.sprites:
+                method(spr, *args, **kwargs)
         return True
 
 
