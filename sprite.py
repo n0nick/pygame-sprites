@@ -2,6 +2,8 @@ import pygame
 from operator import truth
 
 
+# Flag values for anchors.
+# TODO: use Rect's constants
 ANCHOR_TOPLEFT = 101
 ANCHOR_TOPRIGHT = 102
 ANCHOR_BOTTOMLEFT = 103
@@ -25,16 +27,22 @@ class Sprite(object):
     """
 
     def __init__(self, *groups):
+        """initialize sprite instance
+
+        Initializes attributes to default values, and optionally
+        adds it to given groups.
+        """
         self.image = None
         self.rect = None
 
+        self.dirty = False
+
+        # Initialize position
         self.anchor = ANCHOR_TOPLEFT
         self.position = None
         self.offset = (0, 0)
 
-        self.dirty = False
-
-        # visual attributes
+        # Initialize visual attributes
         self.scale = 1
         self.rotate = 0
         self.visible = True
@@ -44,13 +52,26 @@ class Sprite(object):
             self.add(*groups)
 
     def draw(self, surface):
+        """draw the sprite's image on a surface
+
+        Sprite.draw(surface): return Rect
+
+        This should be called by a group's own `draw` method.
+
+        On failure or if sprite should not be drawn, returns 0.
+        """
         if (self.visible):
             return surface.blit(self.image, self.rect)
         else:
             return 0
 
-    # a callback that gets called on any visual change
     def _visual_set(method):
+        """callback that gets called on changes to visual attributes
+
+        Used to trigger the `on_visual_set` event, which is fired
+        before the change and decides whether to continue with it.
+        """
+        #TODO consider using a Python decorator for such setters
         def wrapper(self, *args, **kwargs):
             result = None
 
@@ -65,32 +86,46 @@ class Sprite(object):
         return wrapper
 
     def _get_image(self):
+        """return the current image of the sprite, manipulated if needed
+        """
+        #TODO use memoization of some sort, depending on the visual attributes
+
+        # fetch original image object
         try:
             img = self._image
         except AttributeError:
             img = None
 
+        # manipulate image according to visual attributes
         if img is not None:
             if self.scale != 1 or self.rotate != 0:
-                if self.scale != 1:
+                if self.scale != 1:   # scale image
                     img = pygame.transform.scale(img, self.scaled_size())
-                if self.rotate != 0:
+                if self.rotate != 0:  # rotate image
                     img = pygame.transform.rotate(img, self.rotate)
                 self.rect = img.get_rect()
+            # reset sprite position according to its anchor
             self.position = self.position
 
         return img
 
     def _set_image(self, img):
+        """set the original image object for the sprite
+        """
         self._image = img
 
     image = property(_get_image,
                      _visual_set(_set_image),
                      doc="The sprite's image to draw")
 
-    #TODO handle negative values
-    #TODO use same constants as Rect's
     def anchor_value(self):
+        """return actual position of sprite's anchor
+
+        If anchor was provided in coordinates, use them.
+        Otherwise, translate anchor flags to coordinates.
+        """
+        #TODO handle negative values
+        #TODO use same constants as Rect's
         if type(self.anchor) is tuple:
             return self.anchor
         elif self.anchor == ANCHOR_TOPLEFT:
@@ -107,10 +142,17 @@ class Sprite(object):
             return None  # shouldn't happen :(
 
     def _get_position(self):
+        """return sprite's set position
+        """
         return self._position
 
-    #TODO handle float values
     def _set_position(self, value):
+        """set sprite's position
+
+        The position attribute is changed and then the sprite's
+        rect position is calculated using the sprite's anchor.
+        """
+        #TODO handle float values
         self._position = value
         if value:
             (x, y) = value
@@ -125,9 +167,15 @@ class Sprite(object):
                         would be rendered")
 
     def _get_visible(self):
+        """return sprite's visibility attribute
+        """
         return self._visible
 
     def _set_visible(self, value):
+        """set sprite's visibility
+
+        The sprite would only be drawn if its visibility attribute is True.
+        """
         self._visible = value
 
     visible = property(_get_visible,
@@ -135,9 +183,15 @@ class Sprite(object):
                        doc="Whether to draw the sprite")
 
     def _get_scale(self):
+        """return sprite's scale ratio attribute
+        """
         return self._scale
 
     def _set_scale(self, ratio):
+        """set sprite's scale ratio
+
+        Ratio must be a positive float.
+        """
         if ratio < 0:
             raise AttributeError("ratio must be a positive float")
         self._scale = ratio
@@ -148,18 +202,26 @@ class Sprite(object):
                      original image's size and the size rendered")
 
     def scaled_size(self):
+        """return the sprite's calculated size, after scaling
+        """
         (width, height) = self._image.get_size()
         width = (int)(width * self.scale)
         height = (int)(height * self.scale)
         return (width, height)
 
     def _get_rotate(self):
+        """return the sprite's rotation degree attribute
+        """
         try:
             return self._rotate
         except AttributeError:
             return 0
 
     def _set_rotate(self, degree):
+        """set a rotation degree to the sprite
+
+        Degree must be an integer between -360 and 360.
+        """
         self._rotate = degree % 360  # TODO magic number?
 
     rotate = property(_get_rotate,
@@ -263,12 +325,26 @@ class Sprite(object):
 
 
 class AggregatedSprite(Sprite):
+    """aggregated sprite class collects many sprites into single entity
+
+    pygame.sprite.AggregatedSprite(*groups): return AggregatedSprite
+
+    The aggregated sprite holds a list of child sprites and propagates
+    every visual change to all of the child sprites.
+    """
     def __init__(self, *groups):
+        """iniitalizes sprite
+        """
+        # call super's initialization as usual.
         super(AggregatedSprite, self).__init__(*groups)
+        # resets the rect and position which would be calculated
+        # according to added sprite.
         self.rect = pygame.Rect(0, 0, 0, 0)
         self.position = (0, 0)
 
     def _get_sprites(self):
+        """return list of child sprites
+        """
         try:
             return self._sprites
         except AttributeError:
@@ -276,9 +352,13 @@ class AggregatedSprite(Sprite):
             return self._sprites
 
     def _set_sprites(self, sprites):
+        """overwrite the list of child sprites
+        """
         self._sprites = sprites
 
     def add_sprite(self, sprite):
+        """add a sprite to the list of child sprites
+        """
         self.sprites.append(sprite)
 
     sprites = property(_get_sprites,
@@ -286,6 +366,14 @@ class AggregatedSprite(Sprite):
                        doc="List of sprites to aggregate")
 
     def draw(self, surface):
+        """draw child sprites in order
+
+        AggregatedSprite.draw(surface): return Rect
+
+        Returns a rectangle that is the union of all
+        child sprites' rects.
+        """
+        #TODO consider sprite's layer attribute
         ret = pygame.Rect(0, 0, 0, 0)
         for spr in self.sprites:
             r = spr.draw(surface)
@@ -294,6 +382,8 @@ class AggregatedSprite(Sprite):
         return ret
 
     def on_visual_set(self, method, *args, **kwargs):
+        """propagate a visual attribute change to all child sprites
+        """
         if method.__name__ == '_set_position':
             for spr in self.sprites:
                 spr.offset = args[0]
