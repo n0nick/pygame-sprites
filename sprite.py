@@ -212,10 +212,7 @@ class Sprite(object):
     def _get_rotate(self):
         """return the sprite's rotation degree attribute
         """
-        try:
-            return self._rotate
-        except AttributeError:
-            return 0
+        return self._rotate
 
     def _set_rotate(self, degree):
         """set a rotation degree to the sprite
