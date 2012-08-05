@@ -42,13 +42,13 @@ def load_image(name, colorkey=None):
         if colorkey is -1:
             colorkey = image.get_at((0, 0))
         image.set_colorkey(colorkey, RLEACCEL)
-    return image, image.get_rect()
+    return image
 
 
 class Ball(Sprite):
     def __init__(self):
         Sprite.__init__(self)
-        self.image, self.rect = load_image("ball.png", -1)
+        self.set_image(load_image("ball.png", -1))
         self.anchor = ANCHOR_CENTER
 
 
@@ -73,7 +73,7 @@ def main():
     for i in range(0, BALL_COLS):
         for j in range(0, BALL_ROWS):
             b = Ball()
-            b.position = (BALL_SIZE + i * BALL_SIZE, BALL_SIZE + j * BALL_SIZE)
+            b.move_to((BALL_SIZE + i * BALL_SIZE, BALL_SIZE + j * BALL_SIZE))
             balls.add_sprite(b)
     all = RenderPlain((balls))
 
@@ -111,26 +111,28 @@ def main():
                     elif event.key in top_keys:
                         top = 0
                     elif event.key in visibility_keys:
-                        balls.visible = not balls.visible
+                        balls.toggle_visibility()
                     elif event.key in quit_keys:
                         return
 
             if scale != 0:
                 new_scale = balls.scale + SCALE_STEP * scale
                 if SCALE_MIN < new_scale < SCALE_MAX:
-                    balls.scale = new_scale
+                    balls.scale_by(SCALE_STEP * scale)
 
             if rotate != 0:
-                balls.rotate += rotate * ROTATE_STEP
+                balls.rotate_by(rotate * ROTATE_STEP)
 
             if left != 0 or top != 0:
-                (x, y) = balls.position
-                x += left * MOVE_STEP
-                y += top * MOVE_STEP
-
-                if 0 <= x <= X_MAX:
-                    if 0 <= y <= Y_MAX:
-                        balls.position = (x, y)
+                x = left * MOVE_STEP
+                y = top * MOVE_STEP
+                # balls.move_by((x, y))
+                (new_x, new_y) = balls.position
+                new_x+= x
+                new_y+= y
+                if 0 <= new_x < X_MAX :
+                    if 0 <= new_y < Y_MAX:
+                        balls.move_to((new_x, new_y))
 
             all.clear(screen, background)
             all.update()

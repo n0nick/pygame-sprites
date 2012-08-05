@@ -39,13 +39,13 @@ def load_image(name, colorkey=None):
         if colorkey is -1:
             colorkey = image.get_at((0, 0))
         image.set_colorkey(colorkey, RLEACCEL)
-    return image, image.get_rect()
+    return image
 
 
 class Ball(Sprite):
     def __init__(self, regions):
         Sprite.__init__(self)
-        self.image, self.rect = load_image("ball.png", -1)
+        self.set_image(load_image("ball.png", -1))
         self.regions = regions
         self.current_region = 0
         self.draw_in_region()
@@ -73,7 +73,7 @@ class Ball(Sprite):
             self.anchor = (25, 20)
 
     def draw_in_region(self):
-        self.position = self.regions[self.current_region]
+        self.move_to(self.regions[self.current_region])
 
 
 def print_labels(screen, regions):

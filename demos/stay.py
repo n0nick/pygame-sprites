@@ -38,7 +38,7 @@ def load_image(name, colorkey=None):
         if colorkey is -1:
             colorkey = image.get_at((0, 0))
         image.set_colorkey(colorkey, RLEACCEL)
-    return image, image.get_rect()
+    return image
 
 
 def draw_squares(screen):
@@ -57,7 +57,7 @@ def draw_squares(screen):
 class Ball(Sprite):
     def __init__(self):
         Sprite.__init__(self)
-        self.image, self.rect = load_image("ball.png", -1)
+        self.set_image(load_image("ball.png", -1))
         self.anchor = ANCHOR_CENTER
 
 
@@ -78,7 +78,7 @@ def main():
 
     # add ball sprite
     ball = Ball()
-    ball.position = SCREEN_CENTER
+    ball.move_to(SCREEN_CENTER)
     all = Group((ball))
 
     scale, rotate = 0, 0
@@ -107,17 +107,17 @@ def main():
                         else:
                             ball.anchor = ANCHOR_CENTER
                     elif event.key in visibility_keys:
-                        ball.visible = not(ball.visible)
+                        ball.toggle_visibility()
                     elif event.key in quit_keys:  # quit game
                         return
 
             if scale != 0:
                 new_scale = ball.scale + SCALE_STEP * scale
                 if SCALE_MIN < new_scale < SCALE_MAX:
-                    ball.scale = new_scale
+                    ball.scale_by(scale * SCALE_STEP)
 
             if rotate != 0:
-                ball.rotate += rotate * ROTATE_STEP
+                ball.rotate_by(rotate * ROTATE_STEP)
 
             all.clear(screen, background)
             all.update()
