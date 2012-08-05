@@ -126,38 +126,32 @@ class Sprite(object):
         else:
             return None  # shouldn't happen :(
 
-    def _get_position(self):
-        """return sprite's set position
+    def update_position(self):
+        """ re-calculating the sprite's rect position
         """
-        return self._position
+        (x, y) = self.position
+        (off_x, off_y) = self.offset
+        (anc_x, anc_y) = self.anchor_value()
+        self.rect.topleft = (x + off_x - anc_x, y + off_y - anc_y)
 
-    def _set_position(self, value):
-        """set sprite's position
-
-        The position attribute is changed and then the sprite's
-        rect position is calculated using the sprite's anchor.
+    def move_to(self, pos):
+        """move sprite to a certain position
         """
         #TODO handle float values
-        self._position = value
-        if value:
-            (x, y) = value
-            (off_x, off_y) = self.offset
-            (anchor_x, anchor_y) = self.anchor_value()
-            self.rect.topleft = (x + off_x - anchor_x, y + off_y - anchor_y)
+        self.position = pos
+        if pos:
+            self.update_position()
 
-    position = property(_get_position,
-                        _visual_set(_set_position),
-                        doc="The sprite's designated position, \
-                        that is, where on the surface its anchor \
-                        would be rendered")
-
-    def _get_visible(self):
-        """return sprite's visibility attribute
+    def move_by(self, delta):
+        """move sprite by a certain delta
         """
-        return self._visible
+        (delta_x, delta_y) = delta
+        (current_x, current_y) = self.position
+        self.move_to((current_x + delta_x, current_y + delta_y))
 
-    def _set_visible(self, value):
-        """set sprite's visibility
+    def set_offset(self, offset):
+        self.offset = offset
+        self.update_position()
 
         The sprite would only be drawn if its visibility attribute is True.
         """
