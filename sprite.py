@@ -65,23 +65,24 @@ class Sprite(object):
         else:
             return 0
 
-    def _visual_set(method):
-        """callback that gets called on changes to visual attributes
+    def visual_change(method):
+        """decorator for any method updating a visual attribute
 
-        Used to trigger the `on_visual_set` event, which is fired
-        before the change and decides whether to continue with it.
-        """
-        #TODO consider using a Python decorator for such setters
-        def wrapper(self, *args, **kwargs):
-            result = None
+        marks the sprite as 'dirty', and calls the on_visual_change
+        callback if one is available."""
+        def wrapped(self, *args, **kwargs):
+            go_on = True
 
-            if hasattr(self, 'on_visual_set'):
-                self.on_visual_set(method, *args, **kwargs)
+            if hasattr(self, 'on_visual_change'):
+                go_on = self.on_visual_change(method, *args, **kwargs)
 
-            self.dirty = True
-            return method(self, *args, **kwargs)
-        return wrapper
+            if go_on:
+                self.dirty = True
+                return method(self, *args, **kwargs)
 
+        return wrapped
+
+    @visual_change
     def set_image(self, img):
         """set a new image object for the sprite
         """
@@ -134,6 +135,7 @@ class Sprite(object):
         (anc_x, anc_y) = self.anchor_value()
         self.rect.topleft = (x + off_x - anc_x, y + off_y - anc_y)
 
+    @visual_change
     def move_to(self, pos):
         """move sprite to a certain position
         """
@@ -142,6 +144,7 @@ class Sprite(object):
         if pos:
             self.update_position()
 
+    @visual_change
     def move_by(self, delta):
         """move sprite by a certain delta
         """
@@ -149,19 +152,24 @@ class Sprite(object):
         (current_x, current_y) = self.position
         self.move_to((current_x + delta_x, current_y + delta_y))
 
+    @visual_change
     def set_offset(self, offset):
         self.offset = offset
         self.update_position()
 
+    @visual_change
     def make_visible(self):
         self.visible = True
 
+    @visual_change
     def make_invisible(self):
         self.visible = False
 
+    @visual_change
     def toggle_visibility(self):
         self.visible = not self.visible
 
+    @visual_change
     def scale_to(self, ratio):
         """set sprite's scale ratio (overwriting)
 
@@ -173,6 +181,7 @@ class Sprite(object):
         self.scale = ratio
         self.update_image()
 
+    @visual_change
     def scale_by(self, ratio):
         """set sprite's scale ratio (accumalating)
 
@@ -188,12 +197,14 @@ class Sprite(object):
         height = (int)(height * self.scale)
         return (width, height)
 
+    @visual_change
     def rotate_to(self, degree):
         """rotate sprite's image by a degree (overwriting)
         """
         self.rotate = degree % 360  #TODO magic number?
         self.update_image()
 
+    @visual_change
     def rotate_by(self, degree):
         """ rotate sprite's image by a degree (accumalating)
         """
@@ -336,15 +347,17 @@ class AggregatedSprite(Sprite):
                 ret.union_ip(r)
         return ret
 
-    def on_visual_set(self, method, *args, **kwargs):
+    def on_visual_change(self, method, *args, **kwargs):
         """propagate a visual attribute change to all child sprites
         """
-        if method.__name__ == '_set_position':
+        if method.__name__ == 'move_to':
             for spr in self.sprites:
-                spr.offset = args[0]
+                spr.set_offset(args[0])
+            return True
         else:
             for spr in self.sprites:
                 method(spr, *args, **kwargs)
+            return True
 
 
 class AbstractGroup(object):
