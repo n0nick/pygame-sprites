@@ -32,7 +32,7 @@ class Sprite(object):
         Initializes attributes to default values, and optionally
         adds it to given groups.
         """
-        self.image = None
+        self.image = self.original = None
         self.rect = None
 
         self.dirty = False
@@ -82,38 +82,26 @@ class Sprite(object):
             return method(self, *args, **kwargs)
         return wrapper
 
-    def _get_image(self):
-        """return the current image of the sprite, manipulated if needed
+    def set_image(self, img):
+        """set a new image object for the sprite
         """
-        #TODO use memoization of some sort, depending on the visual attributes
+        self.image = self.original = img
+        self.update_image()
 
-        # fetch original image object
-        try:
-            img = self._image
-        except AttributeError:
-            img = None
+    def update_image(self):
+        """update the sprite's image object
 
-        # manipulate image according to visual attributes
+        usually useful for transformations, this method does
+        not change the 'original' attribute."""
+        img = self.original
         if img is not None:
-            if self.scale != 1 or self.rotate != 0:
-                if self.scale != 1:   # scale image
-                    img = pygame.transform.scale(img, self.scaled_size())
-                if self.rotate != 0:  # rotate image
-                    img = pygame.transform.rotate(img, self.rotate)
-                self.rect = img.get_rect()
-            # reset sprite position according to its anchor
-            self.position = self.position
-
-        return img
-
-    def _set_image(self, img):
-        """set the original image object for the sprite
-        """
-        self._image = img
-
-    image = property(_get_image,
-                     _visual_set(_set_image),
-                     doc="The sprite's image to draw")
+            if self.scale != 1:
+                img = pygame.transform.scale(img, self.scaled_size())
+            if self.rotate != 0:
+                img = pygame.transform.rotate(img, self.rotate)
+            self.image = img
+            self.rect = img.get_rect()
+            self.move_to(self.position)
 
     def anchor_value(self):
         """return actual position of sprite's anchor
