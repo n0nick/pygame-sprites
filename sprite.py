@@ -153,13 +153,14 @@ class Sprite(object):
         self.offset = offset
         self.update_position()
 
-        The sprite would only be drawn if its visibility attribute is True.
-        """
-        self._visible = value
+    def make_visible(self):
+        self.visible = True
 
-    visible = property(_get_visible,
-                       _visual_set(_set_visible),
-                       doc="Whether to draw the sprite")
+    def make_invisible(self):
+        self.visible = False
+
+    def toggle_visibility(self):
+        self.visible = not self.visible
 
     def _get_scale(self):
         """return sprite's scale ratio attribute
