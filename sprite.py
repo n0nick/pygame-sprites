@@ -188,21 +188,16 @@ class Sprite(object):
         height = (int)(height * self.scale)
         return (width, height)
 
-    def _get_rotate(self):
-        """return the sprite's rotation degree attribute
+    def rotate_to(self, degree):
+        """rotate sprite's image by a degree (overwriting)
         """
-        return self._rotate
+        self.rotate = degree % 360  #TODO magic number?
+        self.update_image()
 
-    def _set_rotate(self, degree):
-        """set a rotation degree to the sprite
-
-        Degree must be an integer between -360 and 360.
+    def rotate_by(self, degree):
+        """ rotate sprite's image by a degree (accumalating)
         """
-        self._rotate = degree % 360  # TODO magic number?
-
-    rotate = property(_get_rotate,
-                      _visual_set(_set_rotate),
-                      doc="The degrees by which to rotate the sprite's image")
+        self.rotate_to(self.rotate + degree)
 
     def add(self, *groups):
         """add the sprite to groups
