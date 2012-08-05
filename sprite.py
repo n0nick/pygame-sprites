@@ -162,29 +162,28 @@ class Sprite(object):
     def toggle_visibility(self):
         self.visible = not self.visible
 
-    def _get_scale(self):
-        """return sprite's scale ratio attribute
-        """
-        return self._scale
-
-    def _set_scale(self, ratio):
-        """set sprite's scale ratio
+    def scale_to(self, ratio):
+        """set sprite's scale ratio (overwriting)
 
         Ratio must be a positive float.
         """
         if ratio < 0:
             raise AttributeError("ratio must be a positive float")
-        self._scale = ratio
 
-    scale = property(_get_scale,
-                     _visual_set(_set_scale),
-                     doc="A float representing the ratio between the \
-                     original image's size and the size rendered")
+        self.scale = ratio
+        self.update_image()
+
+    def scale_by(self, ratio):
+        """set sprite's scale ratio (accumalating)
+
+        Ratio must be a positive float.
+        """
+        self.scale_to(self.scale + ratio)
 
     def scaled_size(self):
         """return the sprite's calculated size, after scaling
         """
-        (width, height) = self._image.get_size()
+        (width, height) = self.original.get_size()
         width = (int)(width * self.scale)
         height = (int)(height * self.scale)
         return (width, height)
