@@ -308,33 +308,17 @@ class AggregatedSprite(Sprite):
         """
         # call super's initialization as usual.
         super(AggregatedSprite, self).__init__(*groups)
+        # reset sprites list
+        self.sprites = []
         # resets the rect and position which would be calculated
         # according to added sprite.
         self.rect = pygame.Rect(0, 0, 0, 0)
         self.position = (0, 0)
 
-    def _get_sprites(self):
-        """return list of child sprites
-        """
-        try:
-            return self._sprites
-        except AttributeError:
-            self._sprites = []
-            return self._sprites
-
-    def _set_sprites(self, sprites):
-        """overwrite the list of child sprites
-        """
-        self._sprites = sprites
-
     def add_sprite(self, sprite):
         """add a sprite to the list of child sprites
         """
         self.sprites.append(sprite)
-
-    sprites = property(_get_sprites,
-                       _set_sprites,
-                       doc="List of sprites to aggregate")
 
     def draw(self, surface):
         """draw child sprites in order
