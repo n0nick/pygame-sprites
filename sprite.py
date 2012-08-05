@@ -75,14 +75,11 @@ class Sprite(object):
         def wrapper(self, *args, **kwargs):
             result = None
 
-            do_change = True
             if hasattr(self, 'on_visual_set'):
-                do_change = self.on_visual_set(method, *args, **kwargs)
+                self.on_visual_set(method, *args, **kwargs)
 
-            if do_change:
-                result = method(self, *args, **kwargs)
-                self.dirty = True
-            return result
+            self.dirty = True
+            return method(self, *args, **kwargs)
         return wrapper
 
     def _get_image(self):
@@ -387,7 +384,6 @@ class AggregatedSprite(Sprite):
         else:
             for spr in self.sprites:
                 method(spr, *args, **kwargs)
-        return True
 
 
 class AbstractGroup(object):
