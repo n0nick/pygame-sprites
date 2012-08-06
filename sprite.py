@@ -1,5 +1,6 @@
 import pygame
 from operator import truth
+from functools import wraps
 
 
 # Flag values for anchors.
@@ -10,6 +11,20 @@ ANCHOR_BOTTOMLEFT = 103
 ANCHOR_BOTTOMRIGHT = 104
 ANCHOR_CENTER = 105
 
+def call_hook_method(hook_name):
+    """decorator to wrap a method with a call to a hook method.
+
+    The hook should return a boolean deciding whether to continue
+    with the original method call."""
+    def on_call(method):
+        @wraps(method)
+        def wrapped(self, *args, **kwargs):
+            hook = getattr(self, hook_name, None)
+            if hook:
+                if hook(method, *args, **kwargs):
+                    return method(self, *args, **kwargs)
+        return wrapped
+    return on_call
 
 class Sprite(object):
     """simple base class for visible game objects
@@ -65,24 +80,13 @@ class Sprite(object):
         else:
             return 0
 
-    def visual_change(method):
-        """decorator for any method updating a visual attribute
+    def on_visual_change(self, *args, **kwargs):
+        """mark sprite as dirty on any visual change
+        """
+        self.dirty = True
+        return True
 
-        marks the sprite as 'dirty', and calls the on_visual_change
-        callback if one is available."""
-        def wrapped(self, *args, **kwargs):
-            go_on = True
-
-            if hasattr(self, 'on_visual_change'):
-                go_on = self.on_visual_change(method, *args, **kwargs)
-
-            if go_on:
-                self.dirty = True
-                return method(self, *args, **kwargs)
-
-        return wrapped
-
-    @visual_change
+    @call_hook_method('on_visual_change')
     def set_image(self, img):
         """set a new image object for the sprite
         """
@@ -135,7 +139,7 @@ class Sprite(object):
         (anc_x, anc_y) = self.anchor_value()
         self.rect.topleft = (x + off_x - anc_x, y + off_y - anc_y)
 
-    @visual_change
+    @call_hook_method('on_visual_change')
     def move_to(self, pos):
         """move sprite to a certain position
         """
@@ -144,7 +148,7 @@ class Sprite(object):
         if pos:
             self.update_position()
 
-    @visual_change
+    @call_hook_method('on_visual_change')
     def move_by(self, delta):
         """move sprite by a certain delta
         """
@@ -152,24 +156,24 @@ class Sprite(object):
         (current_x, current_y) = self.position
         self.move_to((current_x + delta_x, current_y + delta_y))
 
-    @visual_change
+    @call_hook_method('on_visual_change')
     def set_offset(self, offset):
         self.offset = offset
         self.update_position()
 
-    @visual_change
+    @call_hook_method('on_visual_change')
     def make_visible(self):
         self.visible = True
 
-    @visual_change
+    @call_hook_method('on_visual_change')
     def make_invisible(self):
         self.visible = False
 
-    @visual_change
+    @call_hook_method('on_visual_change')
     def toggle_visibility(self):
         self.visible = not self.visible
 
-    @visual_change
+    @call_hook_method('on_visual_change')
     def scale_to(self, ratio):
         """set sprite's scale ratio (overwriting)
 
@@ -181,7 +185,7 @@ class Sprite(object):
         self.scale = ratio
         self.update_image()
 
-    @visual_change
+    @call_hook_method('on_visual_change')
     def scale_by(self, ratio):
         """set sprite's scale ratio (accumalating)
 
@@ -197,14 +201,14 @@ class Sprite(object):
         height = (int)(height * self.scale)
         return (width, height)
 
-    @visual_change
+    @call_hook_method('on_visual_change')
     def rotate_to(self, degree):
         """rotate sprite's image by a degree (overwriting)
         """
         self.rotate = degree % 360  #TODO magic number?
         self.update_image()
 
-    @visual_change
+    @call_hook_method('on_visual_change')
     def rotate_by(self, degree):
         """ rotate sprite's image by a degree (accumalating)
         """
@@ -350,14 +354,14 @@ class AggregatedSprite(Sprite):
     def on_visual_change(self, method, *args, **kwargs):
         """propagate a visual attribute change to all child sprites
         """
+        super(AggregatedSprite, self).on_visual_change(method, *args, **kwargs)
         if method.__name__ == 'move_to':
             for spr in self.sprites:
                 spr.set_offset(args[0])
-            return True
         else:
             for spr in self.sprites:
                 method(spr, *args, **kwargs)
-            return True
+        return True
 
 
 class AbstractGroup(object):
