@@ -34,12 +34,16 @@ class SpriteTests(unittest.TestCase):
         self.assertEqual(self.s1.position, (5, 7))
 
     def test_set_image(self):
-        #TODO
-        pass
+        self.s1.set_image(pygame.Surface((10, 10)))
+        self.assertEqual(self.s1.rect.size, (10, 10))
+        self.s1.set_image(pygame.Surface((28, 93)))
+        self.assertEqual(self.s1.rect.size, (28, 93))
 
     def test_update_image(self):
-        #TODO
-        pass
+        self.s1.image = self.s1.original = pygame.Surface((13, 19))
+        self.s1.update_image()
+        self.assertEqual(self.s1.rect.size, (13, 19))
+        #TODO test transformations effects
 
     def test_set_offset(self):
         self.s1.move_to((0, 0))
