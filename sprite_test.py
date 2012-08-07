@@ -119,8 +119,35 @@ class AggregatedSpriteTests(unittest.TestCase):
         pass
 
     def test_propagate(self):
-        #TODO
-        pass
+        # prepare sprites
+        s1 = Sprite()
+        s1.set_image(pygame.Surface((10, 10)))
+        s1.move_to((0, 0))
+        s2 = Sprite()
+        s2.set_image(pygame.Surface((23, 23)))
+        s2.move_to((3, 3))
+        # add to aggregated sprite
+        self.s.add_sprite(s1)
+        self.s.add_sprite(s2)
+        # some sanity-checks
+        self.assertEqual(s1.rect.topleft, (0, 0))
+        self.assertEqual(s2.rect.topleft, (3, 3))
+        self.assertEqual(s1.rect.size, (10, 10))
+        self.assertEqual(s2.rect.size, (23, 23))
+        # propagate move events
+        self.s.move_to((6, 6))
+        self.assertEqual(s1.rect.topleft, (6, 6))
+        self.assertEqual(s2.rect.topleft, (9, 9))
+        self.s.move_by((1, 3))
+        self.assertEqual(s1.rect.topleft, (7, 9))
+        self.assertEqual(s2.rect.topleft, (10, 12))
+        # propagate scale events
+        self.s.scale_to(3)
+        self.assertEqual(s1.rect.size, (30, 30))
+        self.assertEqual(s2.rect.size, (69, 69))
+        self.s.scale_by(2)
+        self.assertEqual(s1.rect.size, (50, 50))
+        self.assertEqual(s2.rect.size, (115, 115))
 
 
 if __name__ == '__main__':
