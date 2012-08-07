@@ -81,12 +81,22 @@ class SpriteTests(unittest.TestCase):
         pass
 
     def test_scale_to(self):
-        #TODO
-        pass
+        self.s1.set_image(pygame.Surface((10, 10)))
+        self.assertEqual(self.s1.rect.size, ((10, 10)))
+        self.s1.scale_to(3)
+        self.assertEqual(self.s1.rect.size, ((30, 30)))
+        self.s1.scale_to(0.7)
+        self.assertEqual(self.s1.rect.size, ((7, 7)))
 
     def test_scale_by(self):
-        #TODO
-        pass
+        self.s1.set_image(pygame.Surface((10, 10)))
+        self.assertEqual(self.s1.rect.size, ((10, 10)))
+        self.s1.scale_by(3)
+        self.assertEqual(self.s1.rect.size, ((40, 40)))
+        self.s1.scale_by(0.7)
+        self.assertEqual(self.s1.rect.size, ((47, 47)))
+        self.s1.scale_by(-2)
+        self.assertEqual(self.s1.rect.size, ((27, 27)))
 
 class AggregatedSpriteTests(unittest.TestCase):
     def setUp(self):
