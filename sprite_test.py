@@ -77,8 +77,14 @@ class SpriteTests(unittest.TestCase):
         pass
 
     def test_rotate_by(self):
-        #TODO
-        pass
+        self.s1.set_image(pygame.Surface((15, 45)))
+        self.assertEqual(self.s1.rotate, 0)
+        self.s1.rotate_by(15)
+        self.assertEqual(self.s1.rotate, 15)
+        self.s1.rotate_by(15)
+        self.assertEqual(self.s1.rotate, 30)
+        self.s1.rotate_by(390)
+        self.assertEqual(self.s1.rotate, 60)
 
     def test_scale_to(self):
         self.s1.set_image(pygame.Surface((10, 10)))
