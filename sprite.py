@@ -362,6 +362,8 @@ class AggregatedSprite(Sprite):
         else:
             for spr in self.sprites:
                 method(spr, *args, **kwargs)
+            if method.__name__ == 'move_by':
+                return False
         return True
 
 
