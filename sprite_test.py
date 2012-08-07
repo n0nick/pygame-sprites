@@ -54,13 +54,16 @@ class SpriteTests(unittest.TestCase):
         self.s1.set_offset((7, 7))
         self.assertEqual(self.s1.rect.topleft, (19, 19))
 
-    def test_make_visible(self):
-        #TODO
-        pass
-
-    def test_make_invisible(self):
-        #TODO
-        pass
+    def test_make_visible_invisible(self):
+        surface = pygame.Surface((20, 20))
+        self.s1.set_image(pygame.Surface((10, 10)))
+        self.s1.image.fill(pygame.Color('red'))
+        self.s1.make_invisible()
+        self.assertEqual(self.s1.visible, False)
+        self.assertEqual(self.s1.draw(surface), 0)
+        self.s1.make_visible()
+        self.assertEqual(self.s1.visible, True)
+        self.assertNotEqual(self.s1.draw(surface), 0)
 
     def test_toggle_visibility(self):
         self.s1.make_visible()
