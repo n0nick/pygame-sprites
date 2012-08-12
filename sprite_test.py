@@ -73,7 +73,25 @@ class SpriteTests(unittest.TestCase):
         self.assertEqual(self.s1.visible, True)
 
     def test_rotate_to(self):
-        #TODO
+        # prepare bg surface
+        surface = pygame.Surface((100, 100))
+        surface.fill(pygame.Color('white'))
+        # prepare sprite
+        self.s1.set_image(pygame.Surface((32, 32), pygame.SRCALPHA))
+        # paint the sprite half red, half blue
+        self.s1.image.fill(pygame.Color('red'), pygame.Rect(0, 0, 16, 32))
+        self.s1.image.fill(pygame.Color('blue'), pygame.Rect(16, 0, 32, 32))
+        # draw sprite on surface
+        self.s1.draw(surface)
+        self.s1.move_to((0, 0))
+
+        # sanity-check colors
+        self.assertEqual(surface.get_at((5, 5)), pygame.Color('red'))
+
+        # rotate sprite
+        self.s1.rotate_to(180)
+        self.s1.draw(surface)
+        self.assertEqual(surface.get_at((5, 5)), pygame.Color('blue'))
         pass
 
     def test_rotate_by(self):
