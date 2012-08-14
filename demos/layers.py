@@ -55,13 +55,13 @@ def main():
 
     # add ball sprite
     ball = Thing("ball")
-    ball.position = (10, 10)
+    ball.move_to((10, 10))
     ball.layer = 1
     button = Thing("button")
-    button.position = (30, 30)
+    button.move_to((30, 30))
     button.layer = 2
     teddy = Thing("teddy")
-    teddy.position = (50, 50)
+    teddy.move_to((50, 50))
     teddy.layer = 3
     all = Group((ball, button, teddy))
 
