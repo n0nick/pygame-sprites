@@ -56,6 +56,7 @@ class Sprite(object):
         self.anchor = ANCHOR_TOPLEFT
         self.position = None
         self.offset = (0, 0)
+        self.layer = 0
 
         # Initialize visual attributes
         self.scale = 1
@@ -384,7 +385,7 @@ class AbstractGroup(object):
         self.lostsprites = []
 
     def sprites(self):
-        """get a list of sprites in the group
+        """get a list of sprites in the group, ordered by layer
 
         Group.sprite(): return list
 
@@ -392,9 +393,9 @@ class AbstractGroup(object):
         it is always a list, but this could change in a future version of
         pygame.) Alternatively, you can get the same information by iterating
         directly over the sprite group, e.g. 'for sprite in group'.
-
         """
-        return list(self.spritedict)
+        return sorted(self.spritedict,
+                      key=lambda sprite: getattr(sprite, "layer", 0))
 
     def add_internal(self, sprite):
         self.spritedict[sprite] = 0
