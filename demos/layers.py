@@ -16,7 +16,7 @@ data_dir = os.path.join(main_dir, 'data')
 SCREEN_SIZE = 700
 
 colors = {
-        "background": pygame.Color(225, 225, 225),
+    "background": pygame.Color(225, 225, 225),
 }
 
 

@@ -5,15 +5,16 @@ from functools import wraps
 
 # Flag values for anchors.
 # TODO: use Rect's constants
-ANCHOR_TOPLEFT     = 101
-ANCHOR_TOPRIGHT    = 102
-ANCHOR_BOTTOMLEFT  = 103
+ANCHOR_TOPLEFT = 101
+ANCHOR_TOPRIGHT = 102
+ANCHOR_BOTTOMLEFT = 103
 ANCHOR_BOTTOMRIGHT = 104
-ANCHOR_CENTER      = 105
-ANCHOR_MIDTOP      = 106
-ANCHOR_MIDBOTTOM   = 107
-ANCHOR_MIDLEFT     = 108
-ANCHOR_MIDRIGHT    = 109
+ANCHOR_CENTER = 105
+ANCHOR_MIDTOP = 106
+ANCHOR_MIDBOTTOM = 107
+ANCHOR_MIDLEFT = 108
+ANCHOR_MIDRIGHT = 109
+
 
 def call_hook_method(hook_name):
     """decorator to wrap a method with a call to a hook method.
@@ -29,6 +30,7 @@ def call_hook_method(hook_name):
                     return method(self, *args, **kwargs)
         return wrapped
     return on_call
+
 
 class Sprite(object):
     """simple base class for visible game objects
@@ -210,7 +212,7 @@ class Sprite(object):
     def rotate_to(self, degree):
         """rotate sprite's image by a degree (overwriting)
         """
-        self.rotate = degree % 360  #TODO magic number?
+        self.rotate = degree % 360  # TODO magic number?
         self.update_image()
 
     @call_hook_method('on_visual_change')
@@ -312,7 +314,7 @@ class Sprite(object):
 
     def __repr__(self):
         return "<%s sprite(in %d groups)>" \
-                % (self.__class__.__name__, len(self.__g))
+            % (self.__class__.__name__, len(self.__g))
 
 
 class AggregatedSprite(Sprite):

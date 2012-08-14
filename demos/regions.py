@@ -22,8 +22,8 @@ REGIONSROW = 7
 REGIONSROWIZE = SCREENSIZE / REGIONSROW
 
 colors = {
-        "background": pygame.Color(225, 225, 225),
-        "point": pygame.Color(0, 0, 0)
+    "background": pygame.Color(225, 225, 225),
+    "point": pygame.Color(0, 0, 0)
 }
 
 

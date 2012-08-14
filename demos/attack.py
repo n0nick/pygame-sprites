@@ -26,7 +26,7 @@ X_MAX = SCREENSIZE - (BALL_COLS + 1) * BALL_SIZE
 Y_MAX = SCREENSIZE - (BALL_ROWS + 1) * BALL_SIZE
 
 colors = {
-        "background": pygame.Color(225, 225, 225)
+    "background": pygame.Color(225, 225, 225)
 }
 
 
@@ -128,9 +128,9 @@ def main():
                 y = top * MOVE_STEP
                 # balls.move_by((x, y))
                 (new_x, new_y) = balls.position
-                new_x+= x
-                new_y+= y
-                if 0 <= new_x < X_MAX :
+                new_x += x
+                new_y += y
+                if 0 <= new_x < X_MAX:
                     if 0 <= new_y < Y_MAX:
                         balls.move_to((new_x, new_y))
 

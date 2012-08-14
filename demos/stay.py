@@ -21,8 +21,8 @@ SCALE_MAX = 7.0
 ROTATE_STEP = 5
 
 colors = {
-        "background": pygame.Color(225, 225, 225),
-        "square": pygame.Color(0, 0, 0)
+    "background": pygame.Color(225, 225, 225),
+    "square": pygame.Color(0, 0, 0)
 }
 
 
@@ -48,10 +48,14 @@ def draw_squares(screen):
             for sgn_y in [+1, -1]:
                 x = SCREEN_SIZE / 2 + sgn_x * size / 2
                 y = SCREEN_SIZE / 2 + sgn_y * size / 2
-                pygame.draw.lines(screen, colors["square"], False,
-                        [(x, y - sgn_y * line_length),
-                         (x, y),
-                         (x - sgn_x * line_length, y)])
+                pygame.draw.lines(
+                    screen,
+                    colors["square"],
+                    False,
+                    [(x, y - sgn_y * line_length),
+                        (x, y),
+                        (x - sgn_x * line_length, y)]
+                )
 
 
 class Ball(Sprite):
