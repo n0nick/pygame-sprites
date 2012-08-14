@@ -9,6 +9,11 @@ ANCHOR_TOPLEFT     = 101
 ANCHOR_TOPRIGHT    = 102
 ANCHOR_BOTTOMLEFT  = 103
 ANCHOR_BOTTOMRIGHT = 104
+ANCHOR_CENTER      = 105
+ANCHOR_MIDTOP      = 106
+ANCHOR_MIDBOTTOM   = 107
+ANCHOR_MIDLEFT     = 108
+ANCHOR_MIDRIGHT    = 109
 
 def call_hook_method(hook_name):
     """decorator to wrap a method with a call to a hook method.
@@ -125,6 +130,10 @@ class Sprite(object):
                 ANCHOR_BOTTOMLEFT:  (0, h),
                 ANCHOR_BOTTOMRIGHT: (w, h),
                 ANCHOR_CENTER:      (w / 2, h / 2),
+                ANCHOR_MIDTOP:      (w / 2, 0),
+                ANCHOR_MIDBOTTOM:   (w / 2, h),
+                ANCHOR_MIDLEFT:     (0, h / 2),
+                ANCHOR_MIDRIGHT:    (w, h / 2)
             }[self.anchor]
 
     def update_position(self):
