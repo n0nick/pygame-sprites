@@ -393,7 +393,7 @@ class AbstractGroup(object):
     def sprites(self):
         """get a list of sprites in the group, ordered by layer
 
-        Group.sprite(): return list
+        Group.sprites(): return list
 
         Returns an object that can be looped over with a 'for' loop. (For now,
         it is always a list, but this could change in a future version of
