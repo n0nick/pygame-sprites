@@ -8,6 +8,7 @@ parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.sys.path.insert(0, parentdir)
 from sprite import *
 
+
 class SpriteTests(unittest.TestCase):
 
     def setUp(self):
@@ -120,6 +121,7 @@ class SpriteTests(unittest.TestCase):
         self.assertEqual(self.s1.rect.size, ((47, 47)))
         self.s1.scale_by(-2)
         self.assertEqual(self.s1.rect.size, ((27, 27)))
+
 
 class AggregatedSpriteTests(unittest.TestCase):
     def setUp(self):
