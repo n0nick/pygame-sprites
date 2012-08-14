@@ -15,7 +15,7 @@ if not pygame.font:
     sys.exit()
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
-data_dir = main_dir
+data_dir = os.path.join(main_dir, 'data')
 
 SCREENSIZE = 700
 REGIONSROW = 7
