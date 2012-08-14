@@ -5,11 +5,10 @@ from functools import wraps
 
 # Flag values for anchors.
 # TODO: use Rect's constants
-ANCHOR_TOPLEFT = 101
-ANCHOR_TOPRIGHT = 102
-ANCHOR_BOTTOMLEFT = 103
+ANCHOR_TOPLEFT     = 101
+ANCHOR_TOPRIGHT    = 102
+ANCHOR_BOTTOMLEFT  = 103
 ANCHOR_BOTTOMRIGHT = 104
-ANCHOR_CENTER = 105
 
 def call_hook_method(hook_name):
     """decorator to wrap a method with a call to a hook method.
@@ -116,21 +115,17 @@ class Sprite(object):
         Otherwise, translate anchor flags to coordinates.
         """
         #TODO handle negative values
-        #TODO use same constants as Rect's
         if type(self.anchor) is tuple:
             return self.anchor
-        elif self.anchor == ANCHOR_TOPLEFT:
-            return (0, 0)
-        elif self.anchor == ANCHOR_TOPRIGHT:
-            return (self.rect.width, 0)
-        elif self.anchor == ANCHOR_BOTTOMLEFT:
-            return (0, self.rect.height)
-        elif self.anchor == ANCHOR_BOTTOMRIGHT:
-            return (self.rect.width, self.rect.height)
-        elif self.anchor == ANCHOR_CENTER:
-            return (self.rect.width / 2, self.rect.height / 2)
         else:
-            return None  # shouldn't happen :(
+            (w, h) = self.rect.size
+            return {
+                ANCHOR_TOPLEFT:     (0, 0),
+                ANCHOR_TOPRIGHT:    (w, 0),
+                ANCHOR_BOTTOMLEFT:  (0, h),
+                ANCHOR_BOTTOMRIGHT: (w, h),
+                ANCHOR_CENTER:      (w / 2, h / 2),
+            }[self.anchor]
 
     def update_position(self):
         """ re-calculating the sprite's rect position
