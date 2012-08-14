@@ -11,7 +11,7 @@ os.sys.path.insert(0, parentdir)
 from sprite import *
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
-data_dir = main_dir
+data_dir = os.path.join(main_dir, 'data')
 
 SCREEN_SIZE = 700
 SCREEN_CENTER = (SCREEN_SIZE / 2, SCREEN_SIZE / 2)
